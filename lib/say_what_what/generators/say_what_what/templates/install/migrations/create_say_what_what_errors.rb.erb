@@ -1,0 +1,42 @@
+# frozen_string_literal: true
+
+class CreateSayWhatWhatErrors < ActiveRecord::Migration<%= migration_version %>
+  def change
+    create_table :say_what_what_errors do |t|
+      t.uuid :public_id, null: false, default: 'gen_random_uuid()'
+      t.string :error_class
+      t.text :message
+      t.text :backtrace
+      t.boolean :handled
+      t.string :severity
+      t.string :source
+      t.string :finger_print
+      t.integer :occurrence_count
+      t.datetime :last_seen_at
+      t.datetime :resolved_at
+
+      t.timestamps
+    end
+
+    create_table :say_what_what_error_occurrences do |t|
+      t.uuid :public_id, null: false, default: 'gen_random_uuid()'
+      t.references :say_what_what_error, null: false, foreign_key: true
+      t.string :request_id
+      t.string :request_method
+      t.string :request_path
+      t.jsonb :error_context, default: {}
+
+      t.timestamps
+    end
+
+    add_index :say_what_what_errors, :public_id
+    add_index :say_what_what_errors, :error_class
+    add_index :say_what_what_errors, :resolved_at
+    add_index :say_what_what_errors, :finger_print
+    add_index :say_what_what_errors, :last_seen_at
+    add_index :say_what_what_errors, :message
+
+    add_index :say_what_what_errors, :public_id
+    add_index :say_what_what_error_occurrences, :request_path
+  end
+end

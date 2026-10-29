@@ -1,0 +1,41 @@
+<article class="sww-article-two">
+  <details>
+    <summary>
+      <p class="sww-p">
+        <small>
+          Occurred at: <%= error_occurrence.created_at %>
+        </small>
+        <br>
+        Path: <%= error_occurrence.request_path %> <br>
+        Method: <%= error_occurrence.request_method %> <br>
+      </p>
+    </summary>
+    <% if error_occurrence.error_context.any? %>
+      <div class="error-context-div">
+        <p class="sww-p">
+          Context:
+        </p>
+        <p class="sww-p ml-4 inline-block max-w-152">
+          <small>
+            <% error_occurrence.error_context.each do |(k, v)| %>
+              <%= "#{k}: #{v}" %> <br>
+            <% end %>
+          </small>
+        </p>
+      </div>
+    <% end %>
+    <div class="sww-backtrace-div max-w-152">
+      <p class="sww-p">
+        Backtrace: <br>
+        <details>
+          <summary>
+            <i class="truncate-reverse inline-block max-w-152"><%= @error.parsed_backtrace.first %></i> <br>
+          </summary>
+          <% @error.parsed_backtrace.each do |line| %>
+            <%= line %> <br>
+          <% end %>
+        </details>
+      </p>
+    </div>
+  </details>
+</article>

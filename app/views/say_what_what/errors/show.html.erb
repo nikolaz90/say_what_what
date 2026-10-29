@@ -1,0 +1,11 @@
+<section class="sww-section rounded-t-none">
+  <h2 class="sww-h2"><%= @error.error_class %></h2>
+  <h3 class="sww-h3"><%= @error.message %></h3>
+  <p>
+    <strong>Occurrences: <%= @error.occurrence_count %>, last seen at: <%= @error.last_seen_at %></strong>
+  </p>
+
+  <% @error.occurrences.order(created_at: :desc).each do |error_occurrence| %>
+    <%= render partial: 'error_occurrence', locals: { error_occurrence: } %>
+  <% end %>
+</section>

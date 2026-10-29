@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Say what what</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%#= yield :head %>
+
+  <%# <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css"> %>
+
+  <%= tag.link rel: "stylesheet", href: public_asset_styles_path(:globals, format: :css, locale: nil), nonce: content_security_policy_nonce, data: { turbo_track: "reload" } %>
+</head>
+<body>
+  <%= render "shared/say_what_what/navbar" %>
+  <main>
+    <%= yield %>
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+<article class="sww-article-one">
+  <p class="sww-p truncate w-152">
+    <strong>
+      <%= error.error_class %>
+    </strong>
+    <br>
+    <small class="">
+      <%= error.message %>
+    </small>
+  </p>
+  <span class="sww-span text-xs">
+    Occurrence:
+    <%= error.occurrence_count %>
+    Last seen at:
+    <%= error.last_seen_at %>
+  </span>
+</article>
