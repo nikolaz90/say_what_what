@@ -15,3 +15,6 @@ Style/StringLiteralsInInterpolation:
 
 Style/RedundantSelf:
   Enabled: false
+
+Style/Documentation:
+  Enabled: false

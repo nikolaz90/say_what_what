@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module SayWhatWhat
   class Error < ApplicationRecord
     has_many :occurrences,
-      class_name: 'SayWhatWhat::ErrorOccurrence',
-      foreign_key: 'say_what_what_error_id'
+             class_name: "SayWhatWhat::ErrorOccurrence",
+             foreign_key: "say_what_what_error_id"
 
     def to_param
       public_id

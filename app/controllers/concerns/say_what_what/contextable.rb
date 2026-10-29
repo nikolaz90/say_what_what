@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SayWhatWhat
   module Contextable
     def prepare_controller_error_context
