@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SayWhatWhat
   class ErrorsController < ApplicationController
     def index

@@ -10,17 +10,17 @@ module SayWhatWhat
         elsif needs_occurrences?
           model.joins(:occurrences).where(concatenated_where_clause).distinct
         elsif wider_search?
-          model.joins(:occurrences).where([ wider_search_clause, { search_term: "%#{@options[:search]}%" } ]).distinct
+          model.joins(:occurrences).where([wider_search_clause, { search_term: "%#{@options[:search]}%" }]).distinct
         else
           model.where(concatenated_where_clause).distinct
         end
       end
 
       def permitted_error_options
-        [
-          :error_class, :message, :severity, :occurrence_count,
-          :last_seen_at_from, :last_seen_at_to, :resolved_at_from, :resolved_at_to,
-          :unresolved, :request_path, :search
+        %i[
+          error_class message severity occurrence_count
+          last_seen_at_from last_seen_at_to resolved_at_from resolved_at_to
+          unresolved request_path search
         ]
       end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SayWhatWhat
   class ErrorSubscriber
     def report(error, handled:, severity:, context:, source: nil)

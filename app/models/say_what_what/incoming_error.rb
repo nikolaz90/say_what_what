@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SayWhatWhat
   class IncomingError
     def initialize(error:, handled:, severity:, error_context: {})
@@ -16,18 +18,16 @@ module SayWhatWhat
     end
 
     def deal_with_it
-      begin
-        @error = Error.find_by(finger_print:)
+      @error = Error.find_by(finger_print:)
 
-        update_or_create_error
+      update_or_create_error
 
-        error_context[:controller] = error_context[:controller].to_s if error_context[:controller]
+      error_context[:controller] = error_context[:controller].to_s if error_context[:controller]
 
-        create_occurrence
-      rescue => exception
-        LOGGER.tagged(SayWhatWhat.name) { LOGGER.error(exception) }
-        LOGGER.tagged(SayWhatWhat.name) { LOGGER.error("Unable to persist error.") }
-      end
+      create_occurrence
+    rescue StandardError => e
+      LOGGER.tagged(SayWhatWhat.name) { LOGGER.error(e) }
+      LOGGER.tagged(SayWhatWhat.name) { LOGGER.error("Unable to persist error.") }
     end
 
     private

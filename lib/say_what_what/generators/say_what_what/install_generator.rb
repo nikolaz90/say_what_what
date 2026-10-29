@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'rails/generators'
-require 'rails/generators/active_record'
+require "rails/generators"
+require "rails/generators/active_record"
 
 module SayWhatWhat
   #
@@ -14,7 +14,8 @@ module SayWhatWhat
     source_paths << TEMPLATES
 
     def create_migration_file
-      migration_template 'migrations/create_say_what_what_errors.rb.erb', File.join(db_migrate_path, "create_say_what_what_errors.rb")
+      migration_template "migrations/create_say_what_what_errors.rb.erb",
+                         File.join(db_migrate_path, "create_say_what_what_errors.rb")
     end
 
     private

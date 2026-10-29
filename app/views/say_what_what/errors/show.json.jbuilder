@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 json.error do
   json.public_id @error.public_id
   json.error_class @error.error_class
@@ -8,9 +10,7 @@ json.error do
       json.occurred_at error_occurrence.created_at
       json.path error_occurrence.request_path
       json.request_method error_occurrence.request_method
-      if error_occurrence.error_context.any?
-        json.error_context error_occurrence.error_context
-      end
+      json.error_context error_occurrence.error_context if error_occurrence.error_context.any?
       json.backtrace @error.parsed_backtrace
     end
   end

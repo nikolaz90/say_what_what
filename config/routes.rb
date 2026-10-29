@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 SayWhatWhat::Engine.routes.draw do
   get "errors", to: "errors#index", as: "say_what_what_errors"
   get "errors/:public_id", to: "errors#show", param: :public_id, as: "say_what_what_error"
