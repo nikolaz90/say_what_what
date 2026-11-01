@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "rails/all"
 require "say_what_what/version"
 require "say_what_what/engine"
 
