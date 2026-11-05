@@ -1,5 +1,5 @@
 # SayWhatWhat
-Error logging for Rails projects with little setup.
+Error logging for Rails projects with very little setup.
 Just an error panel and a few config variables in an initializer.
 Inspired by Devise, Good Job and many other great gems.
 
