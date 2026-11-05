@@ -4,9 +4,7 @@ require "rails/generators"
 require "rails/generators/active_record"
 
 module SayWhatWhat
-  #
-  # Run it with bin/rails g say_what_what:install+ .
-  #
+  # Run it with bin/rails g say_what_what:install .
   class InstallGenerator < Rails::Generators::Base
     include ActiveRecord::Generators::Migration
 
