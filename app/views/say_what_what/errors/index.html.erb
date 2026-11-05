@@ -3,7 +3,7 @@
 
   <details>
     <summary class="mt-4 mb-4 flex flex-row space-between">
-      <%= form_with url: say_what_what_errors_path, method: :get, class: 'mr-2' do |f| %>
+      <%= form_with url: errors_path, method: :get, class: 'mr-2' do |f| %>
         <%= f.text_field :search,
           placeholder: 'Search /path or ActionController::UnknownFormat',
           value: params[:search],
@@ -11,7 +11,7 @@
       <% end %>
       or detailed search
     </summary>
-    <%= form_with url: say_what_what_errors_path, method: :get, class: 'mb-4' do |f| %>
+    <%= form_with url: errors_path, method: :get, class: 'mb-4' do |f| %>
       <div>
         <%= f.label :error_class %>
         <%= f.text_field :error_class,
@@ -42,13 +42,13 @@
       </div>
       <div class='mt-2 flex flex-row'>
         <%= f.submit 'Search', class: 'cta-1 bg-green mr-2' %>
-        <%= link_to "Reset", say_what_what_errors_path, class: 'cta-1 bg-yellow' %>
+        <%= link_to "Reset", errors_path, class: 'cta-1 bg-yellow' %>
       </div>
     <% end %>
   </details>
 
   <% @errors.each do |error| %>
-    <%= link_to say_what_what_error_path(error), class: 'sww-a' do %>
+    <%= link_to error_path(error), class: 'sww-a' do %>
       <%= render partial: 'error_article', locals: { error: } %>
     <% end %>
   <% end %>
