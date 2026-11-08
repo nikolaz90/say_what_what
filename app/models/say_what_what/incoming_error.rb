@@ -17,18 +17,22 @@ module SayWhatWhat
       )
     end
 
+    # rubocop:disable Metrics/AbcSize
     def deal_with_it
+      return if nuissance_error?
+
       @error = Error.find_by(finger_print:)
 
       update_or_create_error
 
       error_context[:controller] = error_context[:controller].to_s if error_context[:controller]
 
-      create_occurrence
+      create_occurrence unless max_occurrences_reached?
     rescue StandardError => e
       LOGGER.tagged(SayWhatWhat.name) { LOGGER.error(e) }
       LOGGER.tagged(SayWhatWhat.name) { LOGGER.error("Unable to persist error.") }
     end
+    # rubocop:enable Metrics/AbcSize
 
     private
 
@@ -67,6 +71,17 @@ module SayWhatWhat
       else
         error.message
       end
+    end
+
+    def nuissance_error?
+      SayWhatWhat.exempt_path_matchers.any? { |exemption| error_context[:request_path].match?(exemption) } ||
+        SayWhatWhat.exempt_error_class_matchers.any? { |exemption| error_class.to_s.match?(exemption) }
+    end
+
+    def max_occurrences_reached?
+      return false if SayWhatWhat.max_occurrences_per_error.nil?
+
+      @error.occurrence_count > SayWhatWhat.max_occurrences_per_error
     end
   end
 end
