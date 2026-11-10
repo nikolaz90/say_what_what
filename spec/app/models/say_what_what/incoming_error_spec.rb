@@ -77,4 +77,45 @@ RSpec.describe SayWhatWhat::IncomingError do
       expect(first_finger_print).not_to eq(second_finger_print)
     end
   end
+
+  describe ".nuissance_error?" do
+    before do
+      SayWhatWhat.exempt_path_matchers = []
+      SayWhatWhat.exempt_error_class_matchers = []
+    end
+
+    it "returns false if request_path is not in SayWhatWhat.exempt_path_matchers" do
+      SayWhatWhat.exempt_path_matchers << "/support/sos"
+      expect(incoming_error_instance.nuissance_error?).to eq false
+    end
+
+    it "returns true if request_path is in SayWhatWhat.exempt_path_matchers" do
+      SayWhatWhat.exempt_path_matchers << "/home"
+      error = described_class.new(
+        error: double(class: NotImplementedError, backtrace: backtrace, message: "Dang!"),
+        severity: "error",
+        handled: false,
+        error_context: {
+          request_path: "/home"
+        }
+      )
+      expect(error.nuissance_error?).to eq true
+    end
+
+    it "returns false if error_class is not in SayWhatWhat.exempt_error_class_matchers" do
+      SayWhatWhat.exempt_error_class_matchers << "NotImplementedError"
+      expect(incoming_error_instance.nuissance_error?).to eq false
+    end
+
+    it "returns true if error_class is in SayWhatWhat.exempt_error_class_matchers" do
+      SayWhatWhat.exempt_error_class_matchers << "NotImplementedError"
+      error = described_class.new(
+        error: double(class: NotImplementedError, backtrace: backtrace, message: "Dang!"),
+        severity: "error",
+        handled: false
+      )
+
+      expect(error.nuissance_error?).to eq true
+    end
+  end
 end

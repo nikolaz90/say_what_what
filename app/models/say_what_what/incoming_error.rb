@@ -34,6 +34,17 @@ module SayWhatWhat
     end
     # rubocop:enable Metrics/AbcSize
 
+    def nuissance_error?
+      SayWhatWhat.exempt_path_matchers.any? { |exemption| error_context[:request_path]&.match?(exemption) } ||
+        SayWhatWhat.exempt_error_class_matchers.any? { |exemption| error_class.to_s.match?(exemption) }
+    end
+
+    def max_occurrences_reached?
+      return false if SayWhatWhat.max_occurrences_per_error.nil?
+
+      @error.occurrence_count > SayWhatWhat.max_occurrences_per_error
+    end
+
     private
 
     attr_reader :error_class, :message, :backtrace, :handled, :severity, :error_context
@@ -71,17 +82,6 @@ module SayWhatWhat
       else
         error.message
       end
-    end
-
-    def nuissance_error?
-      SayWhatWhat.exempt_path_matchers.any? { |exemption| error_context[:request_path].match?(exemption) } ||
-        SayWhatWhat.exempt_error_class_matchers.any? { |exemption| error_class.to_s.match?(exemption) }
-    end
-
-    def max_occurrences_reached?
-      return false if SayWhatWhat.max_occurrences_per_error.nil?
-
-      @error.occurrence_count > SayWhatWhat.max_occurrences_per_error
     end
   end
 end
