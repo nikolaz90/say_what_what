@@ -118,4 +118,16 @@ RSpec.describe SayWhatWhat::IncomingError do
       expect(error.nuissance_error?).to eq true
     end
   end
+
+  describe ".max_occurrences_reached?" do
+    it "returns false if SayWhatWhat.max_occurrences_per_error == nil" do
+      SayWhatWhat.max_occurrences_per_error = nil
+      expect(incoming_error_instance.max_occurrences_reached?).to eq false
+    end
+
+    it "returns true if say_what_what.occurrence_count is greater that SayWhatWhat.max_occurrences_per_error" do
+      SayWhatWhat.max_occurrences_per_error = 15
+      expect(incoming_error_instance.max_occurrences_per_error?).to eq false
+    end
+  end
 end
