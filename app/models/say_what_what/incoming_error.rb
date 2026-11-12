@@ -41,6 +41,7 @@ module SayWhatWhat
 
     def max_occurrences_reached?
       return false if SayWhatWhat.max_occurrences_per_error.nil?
+      return false if @error.occurrence_count.nil?
 
       @error.occurrence_count > SayWhatWhat.max_occurrences_per_error
     end

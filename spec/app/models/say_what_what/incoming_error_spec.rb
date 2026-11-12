@@ -125,9 +125,20 @@ RSpec.describe SayWhatWhat::IncomingError do
       expect(incoming_error_instance.max_occurrences_reached?).to eq false
     end
 
-    it "returns true if say_what_what.occurrence_count is greater that SayWhatWhat.max_occurrences_per_error" do
+    it "returns false if error.occurrence_count == nil" do
+      error = double("SayWhatWhat::Error", occurrence_count: nil)
+      incoming_error_instance.instance_variable_set(:@error, error)
+
+      expect(incoming_error_instance.max_occurrences_reached?).to eq false
+    end
+
+    it "returns true if error.occurrence_count is greater that SayWhatWhat.max_occurrences_per_error" do
       SayWhatWhat.max_occurrences_per_error = 15
-      expect(incoming_error_instance.max_occurrences_per_error?).to eq false
+      binding.pry
+      error = double("SayWhatWhat::Error", occurrence_count: 16)
+      incoming_error_instance.instance_variable_set(:@error, error)
+
+      expect(incoming_error_instance.max_occurrences_reached?).to eq true
     end
   end
 end

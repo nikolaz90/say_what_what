@@ -11,7 +11,7 @@ class CreateSayWhatWhatErrors < ActiveRecord::Migration<%= migration_version %>
       t.string :severity
       t.string :source
       t.string :finger_print
-      t.integer :occurrence_count
+      t.integer :occurrence_count, default: 0
       t.datetime :last_seen_at
       t.datetime :resolved_at
 
