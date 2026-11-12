@@ -14,6 +14,9 @@ module SayWhatWhat
 
   mattr_accessor :active, default: false
   mattr_accessor :default_context, default: {}
+  mattr_accessor :exempt_path_matchers, default: []
+  mattr_accessor :exempt_error_class_matchers, default: []
+  mattr_accessor :max_occurrences_per_error, default: nil
 
   class << self
     def configuration
