@@ -134,7 +134,7 @@ RSpec.describe SayWhatWhat::IncomingError do
 
     it "returns true if error.occurrence_count is greater that SayWhatWhat.max_occurrences_per_error" do
       SayWhatWhat.max_occurrences_per_error = 15
-      binding.pry
+
       error = double("SayWhatWhat::Error", occurrence_count: 16)
       incoming_error_instance.instance_variable_set(:@error, error)
 
