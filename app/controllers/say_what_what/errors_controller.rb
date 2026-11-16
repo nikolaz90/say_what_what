@@ -40,6 +40,18 @@ module SayWhatWhat
       redirect_to error_path(@error)
     end
 
+    def mark_all_resolution
+      collection = filter_query.call(
+        options: index_filter_params
+      ).where("resolved_at IS NULL").where(created_at: ..time_form_was_loaded)
+
+      collection.in_batches(of: 500) do |batch|
+        batch.where("resolved_at IS NULL").update_all(resolved_at: unified_request_time)
+      end
+
+      render json: { location: errors_path(index_filter_params.except(:form_loaded_at)) }
+    end
+
     private
 
     def filter_query
@@ -47,12 +59,22 @@ module SayWhatWhat
     end
 
     def index_filter_params
-      params.permit(*filter_query.permitted_error_options)
+      params.permit(:form_loaded_at, *filter_query.permitted_error_options)
     end
 
     def set_error
       public_id = params[:public_id] || params[:error_public_id]
       @error = SayWhatWhat::Error.find_by(public_id:)
+    end
+
+    def unified_request_time
+      @unified_request_time ||= Time.current
+    end
+
+    def time_form_was_loaded
+      epoch = params[:form_loaded_at].to_i
+      epoch ||= Time.now.to_i
+      Time.at(epoch.div(1000))
     end
   end
 end

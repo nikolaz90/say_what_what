@@ -9,4 +9,6 @@ SayWhatWhat::Engine.routes.draw do
     post 'mark_resolution', to: 'errors#mark_resolution'
     post 'unmark_resolution', to: 'errors#unmark_resolution'
   end
+
+  post 'mark_all_resolution', to: 'errors#mark_all_resolution'
 end
