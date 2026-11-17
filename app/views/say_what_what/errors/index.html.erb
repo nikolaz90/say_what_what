@@ -3,7 +3,7 @@
 
   <details>
     <summary class="mt-4 mb-4 flex flex-row space-between">
-      <%= form_with url: errors_path, method: :get, class: 'mr-2' do |f| %>
+      <%= form_with url: errors_path, method: :get, class: 'mr-2', id: 'wider-search-form' do |f| %>
         <%= f.text_field :search,
           placeholder: 'Search /path or ActionController::UnknownFormat',
           value: params[:search],
@@ -46,7 +46,7 @@
         <%= link_to "Reset", errors_path, class: 'cta-1 bg-yellow' %>
       </div>
     <% end %>
-    <%= button_to "Mark #{@pagy.count} errors shown as resolved", mark_all_resolution_path, { id: 'resolve-search-results-btn' } %><%# formaction: mark_all_resolution_path %>
+    <%= button_to "Mark #{@pagy.count} errors shown as resolved", mark_all_resolution_path, { id: 'resolve-search-results-btn' } %>
   </details>
 
   <div>
@@ -63,14 +63,23 @@
 </section>
 
 <script>
+  const widerSearchForm = document.getElementById('wider-search-form');
   const resolveSearchResultsBtn = document.getElementById('resolve-search-results-btn');
-  const csrfToken = document.getElementsByName('csrf-token')[0].content;
 
+  document.querySelector('#wider-search-form > input[name="search"]').addEventListener('keyup', (e) => {
+    if(e.target.value.length === 0) {
+      resolveSearchResultsBtn.disabled = false;
+    } else {
+      resolveSearchResultsBtn.disabled = true;
+    }
+  });
+
+  const csrfToken = document.getElementsByName('csrf-token')[0].content;
   resolveSearchResultsBtn.addEventListener('click', (e) => {
     e.preventDefault();
 
-    const searchForm = document.getElementById('detailed-search-form');
-    const searchFormData = new FormData(searchForm);
+    const detailedSearchForm = document.getElementById('detailed-search-form');
+    const searchFormData = new FormData(detailedSearchForm);
     searchFormData.append('form_loaded_at', Date.now())
 
     fetch("<%= mark_all_resolution_path %>", {

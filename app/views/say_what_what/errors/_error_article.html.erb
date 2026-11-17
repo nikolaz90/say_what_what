@@ -3,8 +3,13 @@
     <strong>
       <%= error.error_class %>
     </strong>
+    <% if error.resolved_at.present? %>
+      <small>
+        Resolved: <%= error.resolved_at %>
+      </small>
+    <% end %>
     <br>
-    <small class="">
+    <small>
       <%= error.message %>
     </small>
   </p>
