@@ -52,6 +52,21 @@ module SayWhatWhat
       render json: { location: errors_path(index_filter_params.except(:form_loaded_at)) }
     end
 
+    def destroy_all
+      collection = filter_query.call(
+        options: index_filter_params
+      ).where(created_at: ..time_form_was_loaded)
+
+      collection.in_batches(of: 100) do |batch|
+        collection.transaction do
+          ::SayWhatWhat::ErrorOccurrence.where(say_what_what_error_id: batch.map(&:id)).delete_all
+          batch.destroy_all
+        end
+      end
+
+      render json: { location: errors_path }
+    end
+
     private
 
     def filter_query

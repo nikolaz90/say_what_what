@@ -47,6 +47,7 @@
       </div>
     <% end %>
     <%= button_to "Mark #{@pagy.count} errors shown as resolved", mark_all_resolution_path, { id: 'resolve-search-results-btn' } %>
+    <%= button_to "Delete #{@pagy.count} errors", destroy_all_path, { id: 'destroy-search-results-btn', method: :delete, confirm: 'dude?' } %>
   </details>
 
   <div>
@@ -65,16 +66,20 @@
 <script>
   const widerSearchForm = document.getElementById('wider-search-form');
   const resolveSearchResultsBtn = document.getElementById('resolve-search-results-btn');
+  const destroySearchResultsBtn = document.getElementById('destroy-search-results-btn');
 
   document.querySelector('#wider-search-form > input[name="search"]').addEventListener('keyup', (e) => {
     if(e.target.value.length === 0) {
       resolveSearchResultsBtn.disabled = false;
+      destroySearchResultsBtn.disabled = false;
     } else {
       resolveSearchResultsBtn.disabled = true;
+      destroySearchResultsBtn.disabled = true;
     }
   });
 
   const csrfToken = document.getElementsByName('csrf-token')[0].content;
+
   resolveSearchResultsBtn.addEventListener('click', (e) => {
     e.preventDefault();
 
@@ -87,6 +92,24 @@
         'X-CSRF-Token': csrfToken
       },
       method: "POST",
+      body: searchFormData
+    }).then(response => response.json()).then(data => {
+      window.location.href = data.location;
+    });
+  });
+
+  destroySearchResultsBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const detailedSearchForm = document.getElementById('detailed-search-form');
+    const searchFormData = new FormData(detailedSearchForm);
+    searchFormData.append('form_loaded_at', Date.now())
+
+    fetch("<%= destroy_all_path %>", {
+      headers: {
+        'X-CSRF-Token': csrfToken
+      },
+      method: "DELETE",
       body: searchFormData
     }).then(response => response.json()).then(data => {
       window.location.href = data.location;

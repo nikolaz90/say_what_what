@@ -11,4 +11,5 @@ SayWhatWhat::Engine.routes.draw do
   end
 
   post 'mark_all_resolution', to: 'errors#mark_all_resolution'
+  delete 'destroy_all', to: 'errors#destroy_all'
 end
