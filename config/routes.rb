@@ -5,5 +5,11 @@ SayWhatWhat::Engine.routes.draw do
     get "styles/:id", to: "public_assets#styles", as: :public_asset_styles
   end
 
-  resources :errors, param: :public_id, only: %i[index show]
+  resources :errors, param: :public_id, only: %i[index show destroy] do
+    post 'mark_resolution', to: 'errors#mark_resolution'
+    post 'unmark_resolution', to: 'errors#unmark_resolution'
+  end
+
+  post 'mark_all_resolution', to: 'errors#mark_all_resolution'
+  delete 'destroy_all', to: 'errors#destroy_all'
 end

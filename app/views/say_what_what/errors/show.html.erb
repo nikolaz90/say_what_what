@@ -3,7 +3,20 @@
   <h3 class="sww-h3"><%= @error.message %></h3>
   <p>
     <strong>Occurrences: <%= @error.occurrence_count %>, last seen at: <%= @error.last_seen_at %></strong>
+    <% if @error.resolved_at %>
+      <br>
+      Resolved at: <%= @error.resolved_at %>
+    <% end %>
   </p>
+
+  <div>
+    <% if @error.resolved_at.nil? %>
+      <%= button_to "Mark as resolved", error_mark_resolution_path(@error), class: 'sww-a' %>
+    <% else %>
+      <%= button_to "Mark as unresolved", error_unmark_resolution_path(@error), class: 'sww-a' %>
+    <% end %>
+    <%= button_to "delete", error_path(@error), class: 'sww-a', method: :delete %>
+  </div>
 
   <% @error.occurrences.order(created_at: :desc).each do |error_occurrence| %>
     <%= render partial: 'error_occurrence', locals: { error_occurrence: } %>

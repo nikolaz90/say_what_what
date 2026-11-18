@@ -2,6 +2,8 @@
 
 module SayWhatWhat
   class ErrorsController < ApplicationController
+    before_action :set_error, only: %i[show destroy mark_resolution unmark_resolution]
+
     def index
       collection = filter_query.call(options: index_filter_params)
       @pagy, @errors = pagy(:offset, collection.order(last_seen_at: :desc))
@@ -12,11 +14,57 @@ module SayWhatWhat
     end
 
     def show
-      @error = SayWhatWhat::Error.find_by(public_id: params[:public_id])
       respond_to do |format|
         format.html
         format.json
       end
+    end
+
+    def destroy
+      @error.occurrences.in_batches(of: 100).delete_all
+      @error.destroy
+      redirect_to errors_path
+    end
+
+    def mark_resolution
+      return unless @error.resolved_at.nil?
+
+      @error.update(resolved_at: Time.current)
+      redirect_to error_path(@error)
+    end
+
+    def unmark_resolution
+      return if @error.resolved_at.nil?
+
+      @error.update(resolved_at: nil)
+      redirect_to error_path(@error)
+    end
+
+    def mark_all_resolution
+      collection = filter_query.call(
+        options: index_filter_params
+      ).where("resolved_at IS NULL").where(created_at: ..time_form_was_loaded)
+
+      collection.in_batches(of: 500) do |batch|
+        batch.where("resolved_at IS NULL").update_all(resolved_at: unified_request_time)
+      end
+
+      render json: { location: errors_path(index_filter_params.except(:form_loaded_at)) }
+    end
+
+    def destroy_all
+      collection = filter_query.call(
+        options: index_filter_params
+      ).where(created_at: ..time_form_was_loaded)
+
+      collection.in_batches(of: 100) do |batch|
+        collection.transaction do
+          ::SayWhatWhat::ErrorOccurrence.where(say_what_what_error_id: batch.map(&:id)).delete_all
+          batch.destroy_all
+        end
+      end
+
+      render json: { location: errors_path }
     end
 
     private
@@ -26,7 +74,22 @@ module SayWhatWhat
     end
 
     def index_filter_params
-      params.permit(*filter_query.permitted_error_options)
+      params.permit(:form_loaded_at, *filter_query.permitted_error_options)
+    end
+
+    def set_error
+      public_id = params[:public_id] || params[:error_public_id]
+      @error = SayWhatWhat::Error.find_by(public_id:)
+    end
+
+    def unified_request_time
+      @unified_request_time ||= Time.current
+    end
+
+    def time_form_was_loaded
+      epoch = params[:form_loaded_at].to_i
+      epoch ||= Time.now.to_i
+      Time.at(epoch.div(1000))
     end
   end
 end
