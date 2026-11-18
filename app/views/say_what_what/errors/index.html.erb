@@ -64,9 +64,11 @@
 </section>
 
 <script>
-  const widerSearchForm = document.getElementById('wider-search-form');
   const resolveSearchResultsBtn = document.getElementById('resolve-search-results-btn');
   const destroySearchResultsBtn = document.getElementById('destroy-search-results-btn');
+
+  resolveSearchResultsBtn.disabled = true;
+  destroySearchResultsBtn.disabled = true;
 
   document.querySelector('#wider-search-form > input[name="search"]').addEventListener('keyup', (e) => {
     if(e.target.value.length === 0) {
@@ -79,40 +81,29 @@
   });
 
   const csrfToken = document.getElementsByName('csrf-token')[0].content;
+  const detailedSearchForm = document.getElementById('detailed-search-form');
+  const searchFormData = new FormData(detailedSearchForm);
+  searchFormData.append('form_loaded_at', Date.now());
 
   resolveSearchResultsBtn.addEventListener('click', (e) => {
     e.preventDefault();
-
-    const detailedSearchForm = document.getElementById('detailed-search-form');
-    const searchFormData = new FormData(detailedSearchForm);
-    searchFormData.append('form_loaded_at', Date.now())
-
-    fetch("<%= mark_all_resolution_path %>", {
-      headers: {
-        'X-CSRF-Token': csrfToken
-      },
-      method: "POST",
-      body: searchFormData
-    }).then(response => response.json()).then(data => {
-      window.location.href = data.location;
-    });
+    bulkActionFormFetch("<%= mark_all_resolution_path %>", "POST", searchFormData)
   });
 
   destroySearchResultsBtn.addEventListener('click', (e) => {
     e.preventDefault();
+    bulkActionFormFetch("<%= destroy_all_path %>", "DELETE", searchFormData)
+  });
 
-    const detailedSearchForm = document.getElementById('detailed-search-form');
-    const searchFormData = new FormData(detailedSearchForm);
-    searchFormData.append('form_loaded_at', Date.now())
-
-    fetch("<%= destroy_all_path %>", {
+  function bulkActionFormFetch (path, method, body) {
+    fetch(path, {
       headers: {
         'X-CSRF-Token': csrfToken
       },
-      method: "DELETE",
-      body: searchFormData
+      method: method,
+      body: body
     }).then(response => response.json()).then(data => {
       window.location.href = data.location;
     });
-  });
+  }
 </script>
