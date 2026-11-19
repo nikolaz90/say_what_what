@@ -22,12 +22,11 @@ module SayWhatWhat
       return if nuissance_error?
 
       @error = Error.find_by(finger_print:)
-
-      update_or_create_error
+      return if max_occurrences_reached?
 
       error_context[:controller] = error_context[:controller].to_s if error_context[:controller]
-
-      create_occurrence unless max_occurrences_reached?
+      update_or_create_error
+      create_occurrence
     rescue StandardError => e
       LOGGER.tagged(SayWhatWhat.name) { LOGGER.error(e) }
       LOGGER.tagged(SayWhatWhat.name) { LOGGER.error("Unable to persist error.") }
