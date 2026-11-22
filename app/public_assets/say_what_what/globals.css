@@ -187,12 +187,16 @@ div.sww-backtrace-div {
   background-color: rgb(232, 232, 153);
 }
 
+.bg-blue {
+  background-color: rgb(169, 201, 240);
+}
+
 .bg-pink {
   background-color: rgb(236, 181, 181);
 }
 
 .bg-green {
-  background-color: rgb(173, 248, 173);
+  background-color: rgb(213, 255, 213);
 }
 
 /* ad hoc styles */
